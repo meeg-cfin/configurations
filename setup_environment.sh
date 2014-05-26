@@ -19,7 +19,7 @@ then
    
 
     short_path ()                                                     
-    {PS1="\u@\h: \W> "}
+    {export PS1="\u@\h: \W> "}
   
 
 	# change this to provide a list of projects, based on group membership!

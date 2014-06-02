@@ -18,10 +18,18 @@ then
 	{ cd /projects/$MINDLABPROJ; }
    
 
-    short_path ()                                                     
-    {export PS1="\u@\h: \W> "}
-  
+        short_path ()                                                     
+        { export PS1="\u@\h: \W> "; }
 
+        gitprompt ()
+        {
+            source /opt/local/cfin-tools/configurations/bash-colors.sh; # How can this be made independent of the location of cfin-tools?
+            source /opt/local/cfin-tools/configurations/git-prompt.sh; # Some sort of relative reference-magic, but how independent of user?
+            # In fact, it might be better to make a sh script that copies these to ~/ if they don't exist? But then risk overwriting unwanted stuff...
+            
+            export PS1="\[$Green\][\w]\[$Purple\]\$(__git_ps1)\n\[$BCyan\]\u@\[$BYellow\]\h\[\033[1;33m\] \[$White\]\$ \[$Color_Off\]";
+        }
+    
 	# change this to provide a list of projects, based on group membership!
 	set_mindlabproj ()
 	{

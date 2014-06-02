@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This will allow us to call additional scripts relative to the present one
+# (from the same dir)
+current_dir="$(dirname "$BASH_SOURCE")"
+
 # Only run these on isis, AND make sure this is a login shell
 # (otherwise rsync and scp and the likes will die!)
 #if [[ $HOSTNAME == 'isis' ]] && [[ ${DISPLAY} ]]
@@ -18,10 +22,17 @@ then
 	{ cd /projects/$MINDLABPROJ; }
    
 
-    short_path ()                                                     
-    {export PS1="\u@\h: \W> "}
-  
+        short_path ()                                                     
+        { export PS1="\u@\h: \W> "; }
 
+        gitprompt ()
+        {
+            source "$current_dir/bash-colors.sh"
+            source "$current_dir/git-prompt.sh"
+            
+            export PS1="\[$Green\][\w]\[$Purple\]\$(__git_ps1)\n\[$BCyan\]\u@\[$BYellow\]\h\[\033[1;33m\] \[$White\]\$ \[$Color_Off\]";
+        }
+    
 	# change this to provide a list of projects, based on group membership!
 	set_mindlabproj ()
 	{

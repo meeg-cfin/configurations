@@ -16,6 +16,11 @@ then
 
 	gotoproj ()
 	{ cd /projects/$MINDLABPROJ; }
+   
+
+    short_path ()                                                     
+    {export PS1="\u@\h: \W> "}
+  
 
 	# change this to provide a list of projects, based on group membership!
 	set_mindlabproj ()

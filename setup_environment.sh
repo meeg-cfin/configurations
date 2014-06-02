@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This will allow us to call additional scripts relative to the present one
+# (from the same dir)
+current_dir="$(dirname "$BASH_SOURCE")"
+
 # Only run these on isis, AND make sure this is a login shell
 # (otherwise rsync and scp and the likes will die!)
 #if [[ $HOSTNAME == 'isis' ]] && [[ ${DISPLAY} ]]
@@ -23,9 +27,8 @@ then
 
         gitprompt ()
         {
-            source /opt/local/cfin-tools/configurations/bash-colors.sh; # How can this be made independent of the location of cfin-tools?
-            source /opt/local/cfin-tools/configurations/git-prompt.sh; # Some sort of relative reference-magic, but how independent of user?
-            # In fact, it might be better to make a sh script that copies these to ~/ if they don't exist? But then risk overwriting unwanted stuff...
+            source "$current_dir/bash-colors.sh"
+            source "$current_dir/git-prompt.sh"
             
             export PS1="\[$Green\][\w]\[$Purple\]\$(__git_ps1)\n\[$BCyan\]\u@\[$BYellow\]\h\[\033[1;33m\] \[$White\]\$ \[$Color_Off\]";
         }

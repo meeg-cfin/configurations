@@ -19,7 +19,12 @@ then
 	export MINDLABENV='not set'
 
 	gotoproj ()
-	{ cd /projects/$MINDLABPROJ; }
+	{ 
+		if [ $# -ge 1 ]; then
+            set_mindlabproj $1
+        fi
+        cd /projects/$MINDLABPROJ; 
+    }
    
 
         short_path ()                                                     
@@ -36,51 +41,52 @@ then
 	# change this to provide a list of projects, based on group membership!
 	set_mindlabproj ()
 	{
+        GRPLIST=(`groups`)
+        PROJLIST=()
+        for grp in "${GRPLIST[@]}"; do
+            if [[ $grp == mindlab_??? ]]; then 
+                #echo $grp; 
+                fullpth=`find /projects -maxdepth 1 -group $grp`
+                projname=`basename $fullpth`
+                ii=$(($ii + 1))
+                PROJLIST+=($projname)
+            fi
+        done
 		if [ $# -ge 1 ]; then
-			export MINDLABPROJ=$1
-			# Make some logic here to test it actually exists...
-			if [ ! -d /projects/$MINDLABPROJ ]
-			then
-				echo "$MINDLABPROJ does not seem to exist! Please check the name and try again."
-				export MINDLABPROJ='NA'
-			fi
+            pnum=$1 # if you already know the number...
 		else
-			GRPLIST=(`groups`)
-			PROJLIST=()
-			ii=0
-			echo "------------------"
-			echo "Available projects"
-			echo "------------------"
-			for grp in "${GRPLIST[@]}"; do
-				if [[ $grp == mindlab_??? ]]; then 
-					#echo $grp; 
-					fullpth=`find /projects -maxdepth 1 -group $grp`
-					projname=`basename $fullpth`
-					ii=$(($ii + 1))
-					echo $ii: $projname
-					PROJLIST+=($projname)
-				fi
-			done
+            echo "------------------"
+            echo "Available projects"
+            echo "------------------"
+            ii=0
+            for projname in "${PROJLIST[@]}"; do
+                let ii+=1
+                echo $ii: $projname
+            done
 			echo -n "Select project [1-$ii]: "
 			read pnum
-			echo "Environment variable MINDLABPROJ set to ${PROJLIST[$((${pnum} - 1))]}"
-			export MINDLABPROJ=${PROJLIST[$(($pnum - 1))]}
 		fi
+        if [ $pnum -ge ${#PROJLIST[@]} ]; then
+            echo "Project number too large, what are you trying to do?"
+            return 1
+        fi
+        echo "Environment variable MINDLABPROJ set to ${PROJLIST[$((${pnum} - 1))]}"
+        export MINDLABPROJ=${PROJLIST[$(($pnum - 1))]}
 
-	        # check if fs_subjects_dir is present in the selected project and sets that
-        	# to $SUBJECTS_DIR if present
-        	if [[ -d /projects/$MINDLABPROJ/scratch/fs_subjects_dir ]]; then
-            		export SUBJECTS_DIR=/projects/$MINDLABPROJ/scratch/fs_subjects_dir
-        	else
-			echo "Folder fs_subjects_dir not found in scratch."
-			echo -n "Would you like to create it now? [Y/n] "
-			read ans
-			if [[ $ans == "" ]] || [[ $ans == y ]] || [[ $ans == Y ]]; then
-				mkdir /projects/$MINDLABPROJ/scratch/fs_subjects_dir
-				export SUBJECTS_DIR=/projects/$MINDLABPROJ/scratch/fs_subjects_dir
-			fi
-		fi
-            	echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
+        # check if fs_subjects_dir is present in the selected project and sets that
+        # to $SUBJECTS_DIR if present
+        if [[ -d /projects/$MINDLABPROJ/scratch/fs_subjects_dir ]]; then
+            export SUBJECTS_DIR=/projects/$MINDLABPROJ/scratch/fs_subjects_dir
+        else
+            echo "Folder fs_subjects_dir not found in scratch."
+            echo -n "Would you like to create it now? [Y/n] "
+            read ans
+            if [[ $ans == "" ]] || [[ $ans == y ]] || [[ $ans == Y ]]; then
+                mkdir /projects/$MINDLABPROJ/scratch/fs_subjects_dir
+                export SUBJECTS_DIR=/projects/$MINDLABPROJ/scratch/fs_subjects_dir
+            fi
+        fi
+        echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
 			
 	}
 

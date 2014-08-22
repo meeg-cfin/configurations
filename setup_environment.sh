@@ -7,7 +7,7 @@ current_dir="$(dirname "$BASH_SOURCE")"
 # Only run these on isis, AND make sure this is a login shell
 # (otherwise rsync and scp and the likes will die!)
 #if [[ $HOSTNAME == 'isis' ]] && [[ ${DISPLAY} ]]
-if [[ -t 0 && $HOSTNAME == 'isis' ]]
+if [[ -t 0 && ( $HOSTNAME == 'isis' || $HOSTNAME == 'set' ) ]]
 then
 	DEFAULT_PS1=${PS1}
 	DEFAULT_PATH=${PATH}

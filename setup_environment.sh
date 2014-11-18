@@ -66,7 +66,7 @@ then
 			echo -n "Select project [1-$ii]: "
 			read pnum
 		fi
-        if [ $pnum -ge ${#PROJLIST[@]} ]; then
+        if [ $pnum -gt ${#PROJLIST[@]} ]; then
             echo "Project number too large, what are you trying to do?"
             return 1
         fi

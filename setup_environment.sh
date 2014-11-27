@@ -11,6 +11,7 @@ if [[ -t 0 && ( $HOSTNAME == 'isis' || $HOSTNAME == 'seth' ) ]]
 then
 	DEFAULT_PS1=${PS1}
 	DEFAULT_PATH=${PATH}
+    DEFAULT_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
 	# Make a folder in /volatile for local scratch space
 	mkdir -p /volatile/$USER
@@ -210,8 +211,9 @@ then
 	unuse ()
 	{
 		# Simply set path & prompt back to what it was before "use" was called
-		export PATH=$DEFAULT_PATH
-		export PS1=$DEFAULT_PS1
+		export PATH=${DEFAULT_PATH}
+		export PS1=${DEFAULT_PS1}
+		export LD_LIBRARY_PATH=${DEFAULT_LD_LIBRARY_PATH}
 		echo ""
 		echo "All environments unselected (last selected: '${MINDLABENV}'), path reset to default."
 		export MINDLABENV='not set'

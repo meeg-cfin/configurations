@@ -119,9 +119,14 @@ then
  
 
 
-		elif [[ $ENV_NAME == 'cuda' ]]
+		elif [[ $ENV_NAME == 'cuda_freesurfer5.3.0' ]]
 		then 
-			export PATH=/opt/local/cuda/bin:$PATH
+            #echo "This environment is currently not supported"
+
+            # use the local 5.0 installation of cuda, which FS 
+            # seems to require!
+			export PATH=/opt/local/cuda-releases/cuda-5.0/bin:$PATH
+            export LD_LIBRARY_PATH=/opt/local/cuda-releases/cuda-5.0/lib64:${LD_LIBRARY_PATH}
 	
 
 		elif [[ "$ENV_NAME" == mne* ]]
@@ -176,7 +181,9 @@ then
 			then
 				export SUBJECTS_DIR=/opt/local/sample_data/freesurfer/subjects
 			fi
-			
+		    # use the local 5.0 installation of cuda, which FS 
+            # seems to require!
+            use cuda_freesurfer5.3.0
 			. $FREESURFER_HOME/SetUpFreeSurfer.sh
 
 		else

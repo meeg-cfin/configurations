@@ -27,6 +27,16 @@ then
         cd /projects/$MINDLABPROJ;
     }
 
+    reveal_vncservers ()
+    {
+        echo "Your VNC server number(s) is(are):"
+        ps a -u ${USER} | grep Xvnc| sed -n 's/.*rfbport 59\([0-9][0-9]\).*/\1/p' | sed -n 's/\0*\(.*\)/\t\1/p'
+        echo "Please make sure you only have one server running!"
+        echo "You may shut down a server with the command:"
+        echo "        vncserver -kill :XX"
+        echo "where XX is the number of the server."
+    }
+
 
         short_path ()
         { export PS1="\u@\h: \W> "; }

@@ -20,33 +20,33 @@ then
 	export MINDLABENV='not set'
 
 	gotoproj ()
-	{ 
+	{
 		if [ $# -ge 1 ]; then
             set_mindlabproj $1
         fi
-        cd /projects/$MINDLABPROJ; 
+        cd /projects/$MINDLABPROJ;
     }
-   
 
-        short_path ()                                                     
+
+        short_path ()
         { export PS1="\u@\h: \W> "; }
 
         gitprompt ()
         {
             source "$current_dir/bash-colors.sh"
             source "$current_dir/git-prompt.sh"
-            
+
             export PS1="\[$Green\][\w]\[$Purple\]\$(__git_ps1)\n\[$BCyan\]\u@\[$BYellow\]\h\[\033[1;33m\] \[$White\]\$ \[$Color_Off\]";
         }
-    
+
 	# change this to provide a list of projects, based on group membership!
 	set_mindlabproj ()
 	{
         GRPLIST=(`groups`)
         PROJLIST=()
         for grp in "${GRPLIST[@]}"; do
-            if [[ $grp == mindlab_??? ]]; then 
-                #echo $grp; 
+            if [[ $grp == mindlab_??? ]]; then
+                #echo $grp;
                 fullpth=`find /projects -maxdepth 1 -group $grp`
                 projname=`basename $fullpth`
                 ii=$(($ii + 1))
@@ -88,7 +88,7 @@ then
             fi
         fi
         echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
-			
+
 	}
 
 	use ()
@@ -103,32 +103,32 @@ then
 		#ENV_VERS=$2
 
 		if [[ $ENV_NAME == 'epd' ]]
-		then 
-			export PATH=/opt/local/epd/bin:$PATH
-	
-			WORKON_HOME=~/.virtualenvs
-			VIRTUALENVWRAPPER_PYTHON=/opt/local/epd/bin/python
-		
-			# This will now run off EPD
-			source virtualenvwrapper.sh 
-		
-                elif [[ $ENV_NAME == 'anaconda' ]]
-                then
-			export PATH=/usr/local/common/anaconda/bin:$PATH
-			export MNE_PYTHON=/opt/src/python/mne-python
-			export ETS_TOOLKIT="qt4"
- 
+		then
+      echo "This environment is currently not supported"
+			# export PATH=/opt/local/epd/bin:$PATH
+			#
+			# WORKON_HOME=~/.virtualenvs
+			# VIRTUALENVWRAPPER_PYTHON=/opt/local/epd/bin/python
+			#
+			# # This will now run off EPD
+			# source virtualenvwrapper.sh
+			#
+      elif [[ $ENV_NAME == 'anaconda' ]]
+      then
+				export PATH=/usr/local/common/anaconda/bin:$PATH
+				export MNE_PYTHON=/opt/src/python/mne-python
+				export ETS_TOOLKIT="qt4" # should make mne.gui.coregister() work
+
 
 
 		elif [[ $ENV_NAME == 'cuda_freesurfer5.3.0' ]]
-		then 
-            #echo "This environment is currently not supported"
+		then
+      echo "This environment is currently not supported"
+      # use the local 5.0 installation of cuda, which FS
+      # seems to require!
+			# export PATH=/opt/local/cuda-releases/cuda-5.0/bin:$PATH
+      # export LD_LIBRARY_PATH=/opt/local/cuda-releases/cuda-5.0/lib64:${LD_LIBRARY_PATH}
 
-            # use the local 5.0 installation of cuda, which FS 
-            # seems to require!
-			export PATH=/opt/local/cuda-releases/cuda-5.0/bin:$PATH
-            export LD_LIBRARY_PATH=/opt/local/cuda-releases/cuda-5.0/lib64:${LD_LIBRARY_PATH}
-	
 
 		elif [[ "$ENV_NAME" == mne* ]]
 		then
@@ -143,7 +143,7 @@ then
 			fi
 
 			export MATLAB_ROOT=/usr/local/common/matlab
-			. $MNE_ROOT/bin/mne_setup_sh		
+			. $MNE_ROOT/bin/mne_setup_sh
 
 			export MNE_DATASETS_SAMPLE_PATH=/opt/local/sample_data
 			# Default digital trigger line on Aarhus Triux system is:
@@ -173,7 +173,7 @@ then
 
 		elif [[ $ENV_NAME == 'freesurfer' ]]
 		then
-			#if [[ ! -z "$ENV_VERS" ]]; then 
+			#if [[ ! -z "$ENV_VERS" ]]; then
 			#	ENV_NAME=${ENV_NAME}-${ENV_VERS}
 			#fi
 			export FREESURFER_HOME=/opt/local/${ENV_NAME}
@@ -182,9 +182,6 @@ then
 			then
 				export SUBJECTS_DIR=/opt/local/sample_data/freesurfer/subjects
 			fi
-		    # use the local 5.0 installation of cuda, which FS 
-            # seems to require!
-            use cuda_freesurfer5.3.0
 			. $FREESURFER_HOME/SetUpFreeSurfer.sh
 
 		else
@@ -197,7 +194,7 @@ then
 		#export PS1="($ENV_NAME): ${PS1}"
 		# Just leave a subtle hint we've changed something in the path...
 		#export PS1="*${PS1}"
-		if [[ ${PS1}==DEFAULT_PS1 ]] 
+		if [[ ${PS1}==DEFAULT_PS1 ]]
 		then
 			export PS1="<$ENV_NAME>${PS1}"
 		else
@@ -207,7 +204,7 @@ then
 		echo "Environment '${ENV_NAME}' selected, use command 'unuse' to reset to default."
 
 	}
-	
+
 	unuse ()
 	{
 		# Simply set path & prompt back to what it was before "use" was called

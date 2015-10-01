@@ -112,18 +112,7 @@ then
 		ENV_NAME=$1
 		#ENV_VERS=$2
 
-		if [[ $ENV_NAME == 'epd' ]]
-		then
-      echo "This environment is currently not supported"
-			# export PATH=/opt/local/epd/bin:$PATH
-			#
-			# WORKON_HOME=~/.virtualenvs
-			# VIRTUALENVWRAPPER_PYTHON=/opt/local/epd/bin/python
-			#
-			# # This will now run off EPD
-			# source virtualenvwrapper.sh
-			#
-      elif [[ $ENV_NAME == 'anaconda' ]]
+      if [[ $ENV_NAME == 'anaconda' ]]
       then
 				export PATH=/usr/local/common/anaconda/bin:$PATH
 				export MNE_PYTHON=/opt/src/python/mne-python
@@ -144,7 +133,7 @@ then
 		then
 
 			# MNE Configuration
-			export MNE_ROOT=/opt/local/${ENV_NAME}
+			export MNE_ROOT=/usr/local/common/${ENV_NAME}
 
 			if [ ! -d $MNE_ROOT ]
 			then
@@ -155,13 +144,12 @@ then
 			export MATLAB_ROOT=/usr/local/common/matlab
 			. $MNE_ROOT/bin/mne_setup_sh
 
-			export MNE_DATASETS_SAMPLE_PATH=/opt/local/sample_data
 			# Default digital trigger line on Aarhus Triux system is:
 			export MNE_TRIGGER_CH_NAME="STI101"
 			if [ ! -d ~/.mne ]
 			then
 				echo "First time MNE-user, ~/.mne created and set up."
-				source /opt/local/scripts/select_Aarhus_mne_defaults.sh
+				source /usr/local/common/scripts/select_Aarhus_mne_defaults.sh
 			fi
 
 			# Save the env name of mne-something while loading freesurfer
@@ -178,7 +166,7 @@ then
 			# Set the default SUBJECTS_DIR to the MNE sample data
 			if [[ $MINDLABPROJ == 'NA' ]]
 			then
-				export SUBJECTS_DIR=/opt/local/sample_data/MNE-sample-data
+				export SUBJECTS_DIR=/volatile/sample_data/MNE-sample-data
 			fi
 
 		elif [[ $ENV_NAME == 'freesurfer' ]]
@@ -186,11 +174,11 @@ then
 			#if [[ ! -z "$ENV_VERS" ]]; then
 			#	ENV_NAME=${ENV_NAME}-${ENV_VERS}
 			#fi
-			export FREESURFER_HOME=/opt/local/${ENV_NAME}
+			export FREESURFER_HOME=/usr/local/common/${ENV_NAME}
 
 			if [[ $MINDLABPROJ == 'NA' ]]
 			then
-				export SUBJECTS_DIR=/opt/local/sample_data/freesurfer/subjects
+				export SUBJECTS_DIR=/usr/local/sample_data/freesurfer/subjects
 			fi
 			. $FREESURFER_HOME/SetUpFreeSurfer.sh
 

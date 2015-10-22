@@ -153,8 +153,9 @@ then
 
             # Save the env name of mne-something while loading freesurfer
             TMP=$ENV_NAME
-            # Get freesurfer in the path too!
-            use freesurfer
+            # Freesurfer is setup by default on CFIN servers
+            # use freesurfer
+
             # Assume mne-python will be used too!
             use anaconda
             # But don't get double-PS1!

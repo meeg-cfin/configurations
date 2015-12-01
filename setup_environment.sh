@@ -7,7 +7,7 @@ current_dir="$(dirname "$BASH_SOURCE")"
 # Only run these on isis, AND make sure this is a login shell
 # (otherwise rsync and scp and the likes will die!)
 #if [[ $HOSTNAME == 'isis' ]] && [[ ${DISPLAY} ]]
-if [[ -t 0 && ( $HOSTNAME == 'isis' || $HOSTNAME == 'seth' ) ]]
+if [[ -t 0 && $HOSTNAME == 'isis' ]]
 then
 	# Make a folder in /volatile for local scratch space
 	mkdir -p /volatile/$USER
@@ -20,6 +20,9 @@ DEFAULT_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export MINDLABPROJ='NA'
 export MINDLABENV='not set'
 
+# add bin-folder from configurations to path, though these will be scripts
+PATH=${current_dir}/bin:${PATH}
+
 gotoproj ()
 {
     if [ $# -ge 1 ]; then
@@ -28,15 +31,16 @@ gotoproj ()
     cd /projects/$MINDLABPROJ;
 }
 
-reveal_vncservers ()
-{
-    echo "Your VNC server number(s) is(are):"
-    ps a -u ${USER} | grep Xvnc| sed -n 's/.*rfbport 59\([0-9][0-9]\).*/\1/p' | sed -n 's/\0*\(.*\)/\t\1/p'
-    echo "Please make sure you only have one server running!"
-    echo "You may shut down a server with the command:"
-    echo "        vncserver -kill :XX"
-    echo "where XX is the number of the server."
-}
+## This is obsolete after VNC servers discontinued
+#reveal_vncservers ()
+#{
+#    echo "Your VNC server number(s) is(are):"
+#    ps a -u ${USER} | grep Xvnc| sed -n 's/.*rfbport 59\([0-9][0-9]\).*/\1/p' | sed -n 's/\0*\(.*\)/\t\1/p'
+#    echo "Please make sure you only have one server running!"
+#    echo "You may shut down a server with the command:"
+#    echo "        vncserver -kill :XX"
+#    echo "where XX is the number of the server."
+#}
 
 short_path ()
 { export PS1="\u@\h: \W> "; }
@@ -106,27 +110,32 @@ use ()
     if [ $# -lt 1 ]
     then
         echo "Usage: use <environment name>"
-        echo "Possible environments are: anaconda, cuda, mne, mne-stable, freesurfer"
+        echo "Possible environments are: anaconda(3), cuda, mne, mne-stable, freesurfer"
         return 0
     fi
     ENV_NAME=$1
-    #ENV_VERS=$2
 
     if [[ $ENV_NAME == 'anaconda' ]]
     then
         export PATH=/usr/local/common/anaconda/bin:$PATH
 
         # up to users to set their copy of the source
-        # export MNE_PYTHON=/opt/src/python/mne-python 
+        # export MNE_PYTHON=/path/to/mne-python
 
         export ETS_TOOLKIT="qt4" # should make mne.gui.coregister() work
 
+    elif [[ $ENV_NAME == 'anaconda3' ]]
+    then
+        export PATH=/usr/local/common/anaconda3/bin:$PATH
 
+        # up to users to set their copy of the source
+        # export MNE_PYTHON=/path/to/mne-python
+
+        export ETS_TOOLKIT="qt4" # should make mne.gui.coregister() work
 
     elif [[ $ENV_NAME == cuda ]]
     then
         export PATH=/usr/local/cuda/bin:$PATH
-
 
     elif [[ "$ENV_NAME" == mne* ]]
     then
@@ -148,7 +157,8 @@ use ()
         if [ ! -d ~/.mne ]
         then
             echo "First time MNE-user, ~/.mne created and set up."
-            source /opt/local/cfin-tools/configurations/select_Aarhus_mne_defaults.sh
+            mkdir -p ~/.mne
+            cp ${current_dir}/mne_setup_files/* ~/.mne
         fi
 
         # Save the env name of mne-something while loading freesurfer
@@ -171,9 +181,6 @@ use ()
 
     elif [[ $ENV_NAME == 'freesurfer' ]]
     then
-        #if [[ ! -z "$ENV_VERS" ]]; then
-        #	ENV_NAME=${ENV_NAME}-${ENV_VERS}
-        #fi
         export FREESURFER_HOME=/usr/local/${ENV_NAME}
 
         if [[ $MINDLABPROJ == 'NA' ]]
@@ -186,7 +193,6 @@ use ()
         echo "Unknown environment/programme: $ENV_NAME"
         return 1
     fi
-
 
     # This gets to be too much if multiple environments are loaded...
     #export PS1="($ENV_NAME): ${PS1}"

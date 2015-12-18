@@ -4,6 +4,9 @@
 # (from the same dir)
 current_dir="$(dirname "$BASH_SOURCE")"
 
+# add bin-folder from configurations to path, though these will be scripts
+PATH=${current_dir}/bin:${PATH}
+
 # Only run these on isis, AND make sure this is a login shell
 # (otherwise rsync and scp and the likes will die!)
 #if [[ $HOSTNAME == 'isis' ]] && [[ ${DISPLAY} ]]
@@ -19,9 +22,6 @@ DEFAULT_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
 export MINDLABPROJ='NA'
 export MINDLABENV='not set'
-
-# add bin-folder from configurations to path, though these will be scripts
-PATH=${current_dir}/bin:${PATH}
 
 gotoproj ()
 {
@@ -189,6 +189,17 @@ use ()
         fi
         . $FREESURFER_HOME/SetUpFreeSurfer.sh
 
+	elif [[ $ENV_NAME == 'simnibs' ]]
+	then
+	    if [[ $PATH == *conda* ]]
+		then
+			export PATH=`echo ${PATH} | awk -v RS=: -v ORS=: '/conda/ {next} {print}' | sed 's/:*$//'`
+			echo "Warning: SimNiBS uses the system python installation!"
+			echo "(Ana)conda is now removed from your path."
+	    fi
+        export SIMNIBSDIR=/usr/local/common/simnibs
+        source $SIMNIBSDIR/simnibs_conf.sh
+				
     else
         echo "Unknown environment/programme: $ENV_NAME"
         return 1

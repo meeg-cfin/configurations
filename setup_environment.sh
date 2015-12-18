@@ -189,6 +189,15 @@ use ()
         fi
         . $FREESURFER_HOME/SetUpFreeSurfer.sh
 
+		elif [[ $ENV_NAME == 'simnibs' ]]
+		then
+				if [[ $PATH == *conda* ]]
+				then
+					export PATH=`echo ${PATH} | awk -v RS=: -v ORS=: '/conda/ {next} {print}' | sed 's/:*$//'`
+					echo "Warning: SimNiBS uses the system python installation!"
+					echo "(Ana)conda is now removed from your path."
+				fi
+				
     else
         echo "Unknown environment/programme: $ENV_NAME"
         return 1

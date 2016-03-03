@@ -2,7 +2,8 @@
 # This is a convenience script to allow submitting a job to isis that is 
 # capable of using multiple computational theads. An example of such is
 # Maxfilter, and the usage of this script to submit a 4-thread run could be:
-# submit_to_isis 4 /neuro/bin/util/maxfilter -f somefile.fif -o somefile_tsss_mc.fif -st 16 -corr 0.9 -movecomp -hp somefile_tsss.pos -v | tee somefile_tsss.log
+# submit_to_isis 4 "/neuro/bin/util/maxfilter -f somefile.fif -o somefile_tsss_mc.fif -st 16 -corr 0.9 -movecomp -hp somefile_tsss.pos -v | tee somefile_tsss.log"
+# Note that you should apply quotation marks (") around a complex command!
 
 NTHREADS=$1
 EXEC_CMD=${@:2}
@@ -13,7 +14,7 @@ then
     echo "  where"
     echo "      <number of threads> is in the range 1-12"
     echo "      <command to execute> is a multi-parameter command, such as"
-    echo "          /neuro/bin/util/maxfilter -f in.fif -o out.fif -v | tee out.log"
+    echo "          \"/neuro/bin/util/maxfilter -f in.fif -o out.fif -v | tee out.log\""
     exit 1
 fi
 

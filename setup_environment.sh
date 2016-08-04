@@ -1,11 +1,16 @@
 #!/bin/bash
 
+# hard-code this location for now, but beware...
+meeg_cfin_dir=/usr/local/common/meeg-cfin
+PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
+############
+# NB DEPRECATE THIS! no 'bin' in configurations...
 # This will allow us to call additional scripts relative to the present one
 # (from the same dir)
 current_dir="$(dirname "$BASH_SOURCE")"
-
 # add bin-folder from configurations to path, though these will be scripts
 PATH=${current_dir}/bin:${PATH}
+###############
 
 # Only run these on isis, AND make sure this is a login shell
 # (otherwise rsync and scp and the likes will die!)
@@ -88,18 +93,19 @@ set_mindlabproj ()
     echo "Environment variable MINDLABPROJ set to ${PROJLIST[$((${pnum} - 1))]}"
     export MINDLABPROJ=${PROJLIST[$(($pnum - 1))]}
 
-		# Try to be a bit smart about a subjects_dir existing, but don't force
-		# response from the user if not found (just silently move on)
-		SUBJECTS_DIR=$(find /projects/$MINDLABPROJ/scratch -maxdepth 1 -type d \
-									 -name '*subjects_dir*'| head -n1)
-		if [[ -d $SUBJECTS_DIR ]]; then
-			export SUBJECTS_DIR
-			echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
-		else
-			unset SUBJECTS_DIR  # since this script is source'd
-		fi
+    # Try to be a bit smart about a subjects_dir existing, but don't force
+    # response from the user if not found (just silently move on)
+    SUBJECTS_DIR=$(find /projects/$MINDLABPROJ/scratch/ -maxdepth 1 -type d \
+        -name '*subjects_dir*'| head -n1)
+    if [[ -d $SUBJECTS_DIR ]]; then
+        export SUBJECTS_DIR
+        echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
+    else
+        unset SUBJECTS_DIR  # since this script is source'd
+    fi
 
 }
+export -f set_mindlabproj  # export function for subshells/children!
 
 use ()
 {

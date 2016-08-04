@@ -20,9 +20,9 @@ NTHREADS=$1
 EXEC_CMD=${@:2}
 
 # MINDLABPROJ not set, randomly choose first project...
-if [[ $MINDLABPROJ == NA ]] && set_mindlabproj 1
+if [[ ${MINDLABPROJ} == 'NA' ]]; then set_mindlabproj 1; fi
 
-submit_to_cluster -n $NTHREADS -q isis.q ${EXEC_CMD}
+submit_to_cluster -n $NTHREADS -q isis.q "${EXEC_CMD}"
 
 # if [[ $NTHREADS -lt 1 || $NTHREADS -gt 12 ]]
 # then

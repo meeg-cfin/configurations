@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# hard-code this location for now, but beware...
-meeg_cfin_dir=/usr/local/common/meeg-cfin
-PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
-############
-# NB DEPRECATE THIS! no 'bin' in configurations...
 # This will allow us to call additional scripts relative to the present one
 # (from the same dir)
 current_dir="$(dirname "$BASH_SOURCE")"
+meeg_cfin_dir=$(dirname ${current_dir})
+PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
+############
+# NB DEPRECATE THIS! no 'bin' in configurations...
 # add bin-folder from configurations to path, though these will be scripts
 PATH=${current_dir}/bin:${PATH}
 ###############

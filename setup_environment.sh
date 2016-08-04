@@ -88,20 +88,16 @@ set_mindlabproj ()
     echo "Environment variable MINDLABPROJ set to ${PROJLIST[$((${pnum} - 1))]}"
     export MINDLABPROJ=${PROJLIST[$(($pnum - 1))]}
 
-    # check if fs_subjects_dir is present in the selected project and sets that
-    # to $SUBJECTS_DIR if present
-    if [[ -d /projects/$MINDLABPROJ/scratch/fs_subjects_dir ]]; then
-        export SUBJECTS_DIR=/projects/$MINDLABPROJ/scratch/fs_subjects_dir
-    else
-        echo "Folder fs_subjects_dir not found in scratch."
-        echo -n "Would you like to create it now? [Y/n] "
-        read ans
-        if [[ $ans == "" ]] || [[ $ans == y ]] || [[ $ans == Y ]]; then
-            mkdir /projects/$MINDLABPROJ/scratch/fs_subjects_dir
-            export SUBJECTS_DIR=/projects/$MINDLABPROJ/scratch/fs_subjects_dir
-        fi
-    fi
-    echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
+		# Try to be a bit smart about a subjects_dir existing, but don't force
+		# response from the user if not found (just silently move on)
+		SUBJECTS_DIR=$(find /projects/$MINDLABPROJ/scratch -maxdepth 1 -type d \
+									 -name '*subjects_dir*'| head -n1)
+		if [[ -d $SUBJECTS_DIR ]]; then
+			export SUBJECTS_DIR
+			echo "SUBJECTS_DIR set to: $SUBJECTS_DIR"
+		else
+			unset SUBJECTS_DIR  # since this script is source'd
+		fi
 
 }
 
@@ -199,7 +195,7 @@ use ()
 	    fi
         export SIMNIBSDIR=/usr/local/common/simnibs
         source $SIMNIBSDIR/simnibs_conf.sh
-				
+
     else
         echo "Unknown environment/programme: $ENV_NAME"
         return 1

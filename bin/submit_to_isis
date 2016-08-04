@@ -1,49 +1,65 @@
 #!/bin/bash
-# This is a convenience script to allow submitting a job to isis that is 
+# NB This script is _deprecated_ as of August 2016. Use the new
+# `submit_to_cluster`-wrapper instead, located in `stormdb-python/bin`
+
+# This is a convenience script to allow submitting a job to isis that is
 # capable of using multiple computational theads. An example of such is
 # Maxfilter, and the usage of this script to submit a 4-thread run could be:
 # submit_to_isis 4 "/neuro/bin/util/maxfilter -f somefile.fif -o somefile_tsss_mc.fif -st 16 -corr 0.9 -movecomp -hp somefile_tsss.pos -v | tee somefile_tsss.log"
 # Note that you should apply quotation marks (") around a complex command!
 
+echo "##################################################################"
+echo "WARNING! This function is about to be retired. Please learn to use"
+echo "  stormdb-python/bin/submit_to_cluster"
+echo "instead (see submit_to_cluster --help for usage)."
+echo "This function will continue in 5 seconds (hit Ctrl-C to quit.)"
+echo "##################################################################"
+sleep 5
+
 NTHREADS=$1
 EXEC_CMD=${@:2}
 
-if [[ $NTHREADS -lt 1 || $NTHREADS -gt 12 ]]
-then
-    echo "Usage: `basename $0` <number of threads> <command to execute>"
-    echo "  where"
-    echo "      <number of threads> is in the range 1-12"
-    echo "      <command to execute> is a multi-parameter command, such as"
-    echo "          \"/neuro/bin/util/maxfilter -f in.fif -o out.fif -v | tee out.log\""
-    exit 1
-fi
+# MINDLABPROJ not set, randomly choose first project...
+if [[ ${MINDLABPROJ} == 'NA' ]]; then set_mindlabproj 1; fi
 
-echo "Submitting ${EXEC_CMD} on ${NTHREADS} threads"
-echo "Check job_scripts/ in current working directory for output."
-mkdir -p job_scripts
+submit_to_cluster -n $NTHREADS -q isis.q "${EXEC_CMD}"
 
-cat > submit_job.sh <<EOT
-#!/bin/bash
-
-# Pass on all environment variables
-#$ -V
-# Operate in current working directory
-#$ -cwd
-#$ -N submit_to_isis
-#$ -o job_scripts/submit_to_isis.output.\$JOB_ID
-#$ -e job_scripts/submit_to_isis.errors.\$JOB_ID
-#$ -q isis.q
-#$ -pe threaded ${NTHREADS}
-
-export OMP_NUM_THREADS=\$NSLOTS
-
-echo "Executing following command on \$NSLOTS threads:"
-echo "${EXEC_CMD}"
-
-${EXEC_CMD}
-
-echo "Done executing"
-EOT
-
-qsub submit_job.sh
-rm submit_job.sh
+# if [[ $NTHREADS -lt 1 || $NTHREADS -gt 12 ]]
+# then
+#     echo "Usage: `basename $0` <number of threads> <command to execute>"
+#     echo "  where"
+#     echo "      <number of threads> is in the range 1-12"
+#     echo "      <command to execute> is a multi-parameter command, such as"
+#     echo "          \"/neuro/bin/util/maxfilter -f in.fif -o out.fif -v | tee out.log\""
+#     exit 1
+# fi
+#
+# echo "Submitting ${EXEC_CMD} on ${NTHREADS} threads"
+# echo "Check job_scripts/ in current working directory for output."
+# mkdir -p job_scripts
+#
+# cat > submit_job.sh <<EOT
+# #!/bin/bash
+#
+# # Pass on all environment variables
+# #$ -V
+# # Operate in current working directory
+# #$ -cwd
+# #$ -N submit_to_isis
+# #$ -o job_scripts/submit_to_isis.output.\$JOB_ID
+# #$ -e job_scripts/submit_to_isis.errors.\$JOB_ID
+# #$ -q isis.q
+# #$ -pe threaded ${NTHREADS}
+#
+# export OMP_NUM_THREADS=\$NSLOTS
+#
+# echo "Executing following command on \$NSLOTS threads:"
+# echo "${EXEC_CMD}"
+#
+# ${EXEC_CMD}
+#
+# echo "Done executing"
+# EOT
+#
+# qsub submit_job.sh
+# rm submit_job.sh

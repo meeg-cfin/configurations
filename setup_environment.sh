@@ -18,6 +18,9 @@ DEFAULT_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export MINDLABPROJ='NA'
 export MINDLABENV='not set'
 
+alias ll='ls -l -color'
+alias la='ls -la -color'
+
 gotoproj ()
 {
     if [ $# -ge 1 ]; then

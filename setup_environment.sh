@@ -11,15 +11,6 @@ PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
 PATH=${current_dir}/bin:${PATH}
 ###############
 
-# Only run these on isis, AND make sure this is a login shell
-# (otherwise rsync and scp and the likes will die!)
-#if [[ $HOSTNAME == 'isis' ]] && [[ ${DISPLAY} ]]
-if [[ -t 0 && $HOSTNAME == 'isis' ]]
-then
-	# Make a folder in /volatile for local scratch space
-	mkdir -p /volatile/$USER
-fi
-
 DEFAULT_PS1=${PS1}
 DEFAULT_PATH=${PATH}
 DEFAULT_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
@@ -34,17 +25,6 @@ gotoproj ()
     fi
     cd /projects/$MINDLABPROJ;
 }
-
-## This is obsolete after VNC servers discontinued
-#reveal_vncservers ()
-#{
-#    echo "Your VNC server number(s) is(are):"
-#    ps a -u ${USER} | grep Xvnc| sed -n 's/.*rfbport 59\([0-9][0-9]\).*/\1/p' | sed -n 's/\0*\(.*\)/\t\1/p'
-#    echo "Please make sure you only have one server running!"
-#    echo "You may shut down a server with the command:"
-#    echo "        vncserver -kill :XX"
-#    echo "where XX is the number of the server."
-#}
 
 short_path ()
 { export PS1="\u@\h: \W> "; }
@@ -104,7 +84,6 @@ set_mindlabproj ()
     fi
 
 }
-export -f set_mindlabproj  # export function for subshells/children!
 
 use ()
 {
@@ -231,3 +210,5 @@ unuse ()
     echo "All environments unselected (last selected: '${MINDLABENV}'), path reset to default."
     export MINDLABENV='not set'
 }
+
+export -f set_mindlabproj use unuse  # export functions for subshells/children!

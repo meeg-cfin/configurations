@@ -5,11 +5,6 @@
 current_dir="$(dirname "$BASH_SOURCE")"
 meeg_cfin_dir=$(dirname ${current_dir})
 PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
-############
-# NB DEPRECATE THIS! no 'bin' in configurations...
-# add bin-folder from configurations to path, though these will be scripts
-PATH=${current_dir}/bin:${PATH}
-###############
 
 DEFAULT_PS1=${PS1}
 DEFAULT_PATH=${PATH}

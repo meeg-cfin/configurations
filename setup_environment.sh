@@ -214,4 +214,5 @@ unuse ()
     export MINDLABENV='not set'
 }
 
-export -f set_mindlabproj use unuse  # export functions for subshells/children!
+# This could be a problem for qsub, try to not rely on functions, only MINDLABPROJ
+# export -f set_mindlabproj use unuse  # export functions for subshells/children!

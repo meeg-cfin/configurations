@@ -175,13 +175,18 @@ use ()
 	elif [[ $ENV_NAME == 'simnibs' ]]
 	then
 	    if [[ $PATH == *conda* ]]
-		then
-			export PATH=`echo ${PATH} | awk -v RS=: -v ORS=: '/conda/ {next} {print}' | sed 's/:*$//'`
-			echo "Warning: SimNiBS uses the system python installation!"
-			echo "(Ana)conda is now removed from your path."
+		  then
+			  export PATH=`echo ${PATH} | awk -v RS=: -v ORS=: '/conda/ {next} {print}' | sed 's/:*$//'`
+			  echo "Warning: SimNiBS uses the system python installation!"
+			  echo "(Ana)conda is now removed from your path."
 	    fi
-        export SIMNIBSDIR=/usr/local/common/simnibs
-        source $SIMNIBSDIR/simnibs_conf.sh
+      export SIMNIBSDIR=/usr/local/simnibs
+
+      if [ -e ~/.gmsh-options ]
+      then
+        cp ${SIMNIBSDIR}/gmsh-options_simnibsdefault ~/.gmsh-options
+      fi
+      source $SIMNIBSDIR/simnibs_conf.sh
 
     else
         echo "Unknown environment/programme: $ENV_NAME"

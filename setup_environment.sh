@@ -169,12 +169,14 @@ use ()
 
 	elif [[ $ENV_NAME == 'simnibs' ]]
 	then
-	    if [[ $PATH == *conda* ]]
-		  then
-			  export PATH=`echo ${PATH} | awk -v RS=: -v ORS=: '/conda/ {next} {print}' | sed 's/:*$//'`
-			  echo "Warning: SimNiBS uses the system python installation!"
-			  echo "(Ana)conda is now removed from your path."
-	    fi
+      # This is no longer needed: simnibs >= 2.0.1 installs a local
+      # miniconda2-environment and explicitly calls python therein!
+	    # if [[ $PATH == *conda* ]]
+		  # then
+			#  export PATH=`echo ${PATH} | awk -v RS=: -v ORS=: '/conda/ {next} {print}' | sed 's/:*$//'`
+			#  echo "Warning: SimNiBS uses its own python installation (miniconda)!"
+			#  echo "(Ana)conda is now removed from your path."
+	    #fi
       export SIMNIBSDIR=/usr/local/simnibs
 
       if [ -e ~/.gmsh-options ]

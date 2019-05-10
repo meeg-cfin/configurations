@@ -10,9 +10,3 @@ Gain access to various utility-functions on the bash command line by adding the 
 ## `bash_colors.sh` and `git-prompt.sh`
 
 Make your bash shell pretty by sourcing these.
-
-# Executables/scripts
-
-Add the `bin`-folder to your path (done by `setup_environment.sh`).
-
-## submit_to_cluster

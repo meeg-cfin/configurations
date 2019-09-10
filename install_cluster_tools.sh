@@ -16,16 +16,24 @@ echo ${TMPDIR}
 cd ${TMPDIR}
 # type conda >/dev/null 2>&1 || { echo >&2 "conda not in path, installing now..."; }
 if type conda &>/dev/null ; then
-    echo 'Seems like conda is already installed in your path, skipping...';
+    conda_exe=`which conda`
+    echo 'Seems like conda is already installed in your path, great!';
+    echo 'Using: ${conda_exe}';
 else 
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     sh Miniconda3-latest-Linux-x86_64.sh -b
-fi
 
-# these set up the required path etc for rest of script to function!
-eval "$(~/miniconda3/bin/conda shell.bash hook)"
-# modifies .bashrc
-conda init
+    # these set up the required path etc for rest of script to function!
+    __conda_setup=$(~/miniconda3/bin/conda shell.bash hook)
+    if if [[ -z ${__conda_setup// } ]]; then
+        echo 'Something went wrong with miniconda installation, contact administrators!'
+        echo 'Give them the following information: bash hook failed (__conda_setup)'
+        exit 1;
+    fi
+    eval "$__conda_setup"
+    # modifies .bashrc
+    conda init
+fi
 
 # install python version relevant to mne-python (just in case it's also wanted)
 curl -O https://raw.githubusercontent.com/mne-tools/mne-python/master/environment.yml

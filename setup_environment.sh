@@ -4,7 +4,9 @@
 # (from the same dir)
 current_dir="$(dirname "$BASH_SOURCE")"
 meeg_cfin_dir=$(dirname ${current_dir})
-PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
+
+# deprecate this in favour of initialise_environment_for_cluster_use
+# PATH=${meeg_cfin_dir}/stormdb-python/bin:${PATH}
 
 DEFAULT_PS1=${PS1}
 DEFAULT_PATH=${PATH}
@@ -15,6 +17,11 @@ export MINDLABENV='not set'
 
 alias ll='ls -l -color'
 alias la='ls -la -color'
+
+initialise_environment_for_cluster_use ()
+{
+    sh ${current_dir}/install_cluster_tools.sh
+}
 
 gotoproj ()
 {

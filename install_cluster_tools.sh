@@ -25,7 +25,7 @@ else
 
     # these set up the required path etc for rest of script to function!
     __conda_setup=$(~/miniconda3/bin/conda shell.bash hook)
-    if if [[ -z ${__conda_setup// } ]]; then
+    if [[ -z ${__conda_setup// } ]]; then
         echo 'Something went wrong with miniconda installation, contact administrators!'
         echo 'Give them the following information: bash hook failed (__conda_setup)'
         exit 1;
